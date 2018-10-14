@@ -8,17 +8,28 @@ set -x
 CPATH=`pwd`
 echo "[Drone build] current path : ${CPATH}"
 
-echo "[Drone build] Installing ThreePaCo"
-wget https://github.com/01org/tbb/releases/download/2019_U1/tbb2019_20181003oss_lin.tgz
-tar -xvzf tbb2019_20181003oss_lin.tgz
-git clone https://github.com/fataltes/TwoPaCo.git
-cd TwoPaCo
-git checkout pufferize
-mkdir build
-cd build
-cmake ../src/ -DTBB_LIB_DIR=${CPATH}/tbb2019_20181003oss/lib/intel64/gcc4.7/ -DTBB_INCLUDE_DIR=${CPATH}/tbb2019_20181003oss/include/
-make
+echo "[Drone build] Installing SeqLib"
+mkdir external_dependencies
+cd external_dependencies
+git clone --recursive https://github.com/walaj/SeqLib.git
+cd SeqLib
+./configure
+make CXXFLAGS='-std=c++11'
+make install
+make seqtools
 cd ../..
+
+#echo "[Drone build] Installing ThreePaCo"
+#wget https://github.com/01org/tbb/releases/download/2019_U1/tbb2019_20181003oss_lin.tgz
+#tar -xvzf tbb2019_20181003oss_lin.tgz
+#git clone https://github.com/fataltes/TwoPaCo.git
+#cd TwoPaCo
+#git checkout pufferize
+#mkdir build
+#cd build
+#cmake ../src/ -DTBB_LIB_DIR=${CPATH}/tbb2019_20181003oss/lib/intel64/gcc4.7/ -DTBB_INCLUDE_DIR=${CPATH}/tbb2019_20181003oss/include/
+#make
+#cd ../..
 
 echo "[Drone build] Installikng sdsl"
 git clone https://github.com/simongog/sdsl-lite.git
